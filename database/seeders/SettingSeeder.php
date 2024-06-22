@@ -13,8 +13,8 @@ class SettingSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('setting_keys')->truncate();
-        DB::table('setting_keys')->insert([
+        DB::table('settings')->truncate();
+        DB::table('settings')->insert([
             [
                 'setting_key_id' => 1,
                 'value' => 'Naufal Hakim Syahputra',

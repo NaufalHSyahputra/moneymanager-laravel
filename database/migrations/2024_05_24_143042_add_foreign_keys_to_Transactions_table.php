@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreign(['to_account_id'], 'transactions_to_account_id_fkey')->references(['id'])->on('accounts')->onUpdate('no action')->onDelete('no action');
             $table->foreign(['category_id'], 'transactions_category_id_fkey')->references(['id'])->on('categories')->onUpdate('no action')->onDelete('no action');
             $table->foreign(['loan_id'], 'transactions_loan_id_fkey')->references(['id'])->on('loans')->onUpdate('no action')->onDelete('no action');
-            $table->foreign(['location_id'], 'transactions_location_id_fkey')->references(['id'])->on('locations')->onUpdate('no action')->onDelete('no action');
             $table->foreign(['payee_id'], 'transactions_payee_id_fkey')->references(['id'])->on('payees')->onUpdate('no action')->onDelete('no action');
         });
     }

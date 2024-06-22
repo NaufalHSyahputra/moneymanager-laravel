@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('settings', function (Blueprint $table) {
-            $table->foreign(['setting_key_id'], 'settings_setting_key_id_fkey')->references(['setting_key_id'])->on('setting_keys')->onUpdate('no action')->onDelete('no action');
+            $table->foreign(['setting_key_id'], 'settings_setting_key_id_fkey')->references(['id'])->on('setting_keys')->onUpdate('no action')->onDelete('no action');
         });
     }
 

@@ -14,8 +14,8 @@ class PayeeTypeSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('payees')->truncate();
-        DB::table('payees')->insert([
+        DB::table('payee_types')->truncate();
+        DB::table('payee_types')->insert([
             [
                 'id' => 1,
                 'name' => 'Person',

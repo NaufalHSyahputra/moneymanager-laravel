@@ -57,7 +57,7 @@ class CategorySeeder extends Seeder
             ['id' => 48, 'name' => 'Others', 'parent_id' => 44, 'category_type_id' => 1],
             ['id' => 49, 'name' => 'Miscellaneous', 'parent_id' => null, 'category_type_id' => 1],
             ['id' => 50, 'name' => 'Gifts', 'parent_id' => null, 'category_type_id' => 1],
-            ['id' => 51, 'name' => 'Income', 'parent_id' => null], 'category_type_id' => 2,
+            ['id' => 51, 'name' => 'Income', 'parent_id' => null, 'category_type_id' => 2],
             ['id' => 52, 'name' => 'Salary', 'parent_id' => 51, 'category_type_id' => 2],
             ['id' => 53, 'name' => 'Reimbursement/Refunds', 'parent_id' => 51, 'category_type_id' => 2],
             ['id' => 54, 'name' => 'Investment Income', 'parent_id' => 51, 'category_type_id' => 2],
