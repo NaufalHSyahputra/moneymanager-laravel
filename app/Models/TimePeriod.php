@@ -39,7 +39,7 @@ class TimePeriod
     {
         if ($this->month !== null) {
             $date = $this->year !== null ? Carbon::create($this->year, $this->month) : Carbon::create(null, $this->month);
-            $range = $startDateOfMonth != 1 ? $this->customStartDayOfMonthPeriodRange($date, $startDateOfMonth) : [$date->startOfMonth(), $date->endOfMonth()];
+            $range = $startDateOfMonth != 1 ? $this->customStartDayOfMonthPeriodRange($date, $startDateOfMonth) : [$date->copy()->startOfMonth(), $date->copy()->endOfMonth()];
             $fromtoRange = new FromToTimeRange($range[0], $range[1]);
             // Check if the range falls on a weekend and subtract one day if it does
             if ($fromtoRange->from()->isWeekend()) {
