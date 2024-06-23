@@ -11,7 +11,15 @@ class TimePeriodController extends Controller
     {
         // Example: Get the current month time period starting from the 15th
         $startDayOfMonth = (int)$request->get('start_day_of_month', 1);
-        $timePeriod = TimePeriod::currentMonth($startDayOfMonth);
+        /**
+         * Start Day is Weekend
+         * 
+         * 1: Do Nothing
+         * 2: Previous Friday
+         * 3: Next Monday
+         */
+        $startDayIsWeekend = (int)$request->get('start_day_is_weekend', 1);
+        $timePeriod = TimePeriod::currentMonth($startDayOfMonth, $startDayIsWeekend);
         $range = $timePeriod->toRange($startDayOfMonth);
         $shortDisplay = $timePeriod->toDisplayShort($startDayOfMonth);
         $longDisplay = $timePeriod->toDisplayLong($startDayOfMonth);

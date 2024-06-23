@@ -6,20 +6,23 @@ use Carbon\Carbon;
 
 class TimePeriod
 {
-    private $month;
-    private $year;
+    private int $month;
+    private int $year;
     private FromToTimeRange|null $fromToRange;
     private LastNTimeRange|null $lastNRange;
 
-    public function __construct($month = null, $year = null, $fromToRange = null, $lastNRange = null)
+    private int $startDayIsWeekend;
+
+    public function __construct($month = null, $year = null, $fromToRange = null, $lastNRange = null, $startDayIsWeekend = null)
     {
         $this->month = $month;
         $this->year = $year;
         $this->fromToRange = $fromToRange;
         $this->lastNRange = $lastNRange;
+        $this->startDayIsWeekend = $startDayIsWeekend;
     }
 
-    public static function currentMonth($startDayOfMonth)
+    public static function currentMonth($startDayOfMonth, $startDayIsWeekend)
     {
         $dateNowUTC = Carbon::now('UTC');
         $dayToday = $dateNowUTC->day;
@@ -27,7 +30,7 @@ class TimePeriod
         $newPeriodStarted = $dayToday >= $startDayOfMonth;
         $periodDate = $newPeriodStarted ? $dateNowUTC : $dateNowUTC->subMonth();
 
-        return new TimePeriod($periodDate->month, $periodDate->year);
+        return new TimePeriod($periodDate->month, $periodDate->year, null, null, $startDayIsWeekend);
     }
 
     public function isValid()
@@ -41,19 +44,20 @@ class TimePeriod
             $date = $this->year !== null ? Carbon::create($this->year, $this->month) : Carbon::create(null, $this->month);
             $range = $startDateOfMonth != 1 ? $this->customStartDayOfMonthPeriodRange($date, $startDateOfMonth) : [$date->copy()->startOfMonth(), $date->copy()->endOfMonth()];
             $fromtoRange = new FromToTimeRange($range[0], $range[1]);
-            // Check if the range falls on a weekend and subtract one day if it does
-            if ($fromtoRange->from()->isWeekend()) {
-                if ($fromtoRange->from()->isSunday()) { 
-                    $fromtoRange->from()->setDateFrom($fromtoRange->from()->subDays(2));
-                } else { 
-                    $fromtoRange->from()->setDateFrom($fromtoRange->from()->subDay());
+            if ($this->startDayIsWeekend != 1) { 
+                if ($fromtoRange->from()->isWeekend()) {
+                    if ($this->startDayIsWeekend == 2) { 
+                        $fromtoRange->from()->setDateFrom($fromtoRange->from()->copy()->previousWeekday());
+                    } else { 
+                        $fromtoRange->from()->setDateFrom($fromtoRange->from()->copy()->nextWeekday());
+                    }
                 }
-            }
-            if ($fromtoRange->to()->isWeekend()) {
-                if ($fromtoRange->to()->isSunday()) { 
-                    $fromtoRange->to()->setDateFrom($fromtoRange->to()->subDays(2));
-                } else { 
-                    $fromtoRange->to()->setDateFrom($fromtoRange->to()->subDay());
+                if ($fromtoRange->to()->isWeekend()) {
+                    if ($this->startDayIsWeekend == 2) { 
+                        $fromtoRange->to()->setDateFrom($fromtoRange->to()->copy()->previousWeekday());
+                    } else { 
+                        $fromtoRange->to()->setDateFrom($fromtoRange->to()->copy()->nextWeekday());
+                    }
                 }
             }
         } elseif ($this->fromToRange !== null) {
@@ -91,7 +95,7 @@ class TimePeriod
     {
         if ($this->month !== null) {
             if ($startDateOfMonth == 1) {
-                $this->displayMonthStartingOn1st($this->month);
+                return $this->displayMonthStartingOn1st($this->month);
             } else { 
                 $toRange = $this->toRange($startDateOfMonth);
                 return $this->toDisplay($toRange[0], $toRange[1]);
@@ -110,7 +114,7 @@ class TimePeriod
     {
         $year = $this->year;
         $currentYear = Carbon::now('UTC')->year;
-        return $year !== null && $currentYear != $year ? substr($month, 0, 3) . ', ' . $year : $month;
+        return $year !== null && $currentYear != $year ? substr(Carbon::create()->day(1)->month($month)->monthName, 0, 3) . ', ' . $year : Carbon::create()->day(1)->month($month)->monthName;
     }
 
     private function formatRange($range)
