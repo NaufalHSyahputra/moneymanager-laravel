@@ -18,7 +18,7 @@ class LastNTimeRange
 
     public function fromDate()
     {
-        return $this->periodType->incrementDate(Carbon::now('UTC'), -$this->periodN);
+        return $this->periodType->incrementDate(Carbon::now('Asia/Jakarta'), -$this->periodN);
     }
 
     public function forDisplay()

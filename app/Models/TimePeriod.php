@@ -13,29 +13,27 @@ class TimePeriod
 
     private int $startDayIsWeekend;
 
-    public function __construct($month = null, $year = null, $fromToRange = null, $lastNRange = null, $startDayIsWeekend = null)
+    public function __construct($month = null, $year = null, $startDayIsWeekend = null)
     {
         $this->month = $month;
         $this->year = $year;
-        $this->fromToRange = $fromToRange;
-        $this->lastNRange = $lastNRange;
         $this->startDayIsWeekend = $startDayIsWeekend;
     }
 
     public static function currentMonth($startDayOfMonth, $startDayIsWeekend)
     {
-        $dateNowUTC = Carbon::now('UTC');
+        $dateNowUTC = Carbon::now('Asia/Jakarta');
         $dayToday = $dateNowUTC->day;
 
         $newPeriodStarted = $dayToday >= $startDayOfMonth;
         $periodDate = $newPeriodStarted ? $dateNowUTC : $dateNowUTC->subMonth();
 
-        return new TimePeriod($periodDate->month, $periodDate->year, null, null, $startDayIsWeekend);
+        return new TimePeriod($periodDate->month, $periodDate->year, $startDayIsWeekend);
     }
 
     public function isValid()
     {
-        return $this->month !== null || $this->fromToRange !== null || $this->lastNRange !== null;
+        return $this->month !== null;
     }
 
     public function toRange($startDateOfMonth)
@@ -60,12 +58,8 @@ class TimePeriod
                     }
                 }
             }
-        } elseif ($this->fromToRange !== null) {
-            $fromtoRange = new FromToTimeRange();
-        } elseif ($this->lastNRange !== null) {
-            $fromtoRange = new FromToTimeRange($this->lastNRange->fromDate(), Carbon::now('UTC'));
         } else {
-            $date = Carbon::now('UTC');
+            $date = Carbon::now('Asia/Jakarta');
             $fromtoRange = new FromToTimeRange($date->startOfMonth(), $date->endOfMonth());
         }
         return [$fromtoRange->from(), $fromtoRange->to()];
@@ -73,8 +67,8 @@ class TimePeriod
 
     private function customStartDayOfMonthPeriodRange($date, $startDateOfMonth)
     {
-        $from = $date->copy()->day($startDateOfMonth)->startOfDay()->setTimezone('UTC');
-        $to = $date->copy()->addMonth()->day($startDateOfMonth)->subDay()->endOfDay()->setTimezone('UTC');
+        $from = $date->copy()->day($startDateOfMonth)->startOfDay()->setTimezone('Asia/Jakarta');
+        $to = $date->copy()->addMonth()->day($startDateOfMonth)->subDays(2)->endOfDay()->setTimezone('Asia/Jakarta');
         return [$from, $to];
     }
 
@@ -113,7 +107,7 @@ class TimePeriod
     private function displayMonthStartingOn1st($month)
     {
         $year = $this->year;
-        $currentYear = Carbon::now('UTC')->year;
+        $currentYear = Carbon::now('Asia/Jakarta')->year;
         return $year !== null && $currentYear != $year ? substr(Carbon::create()->day(1)->month($month)->monthName, 0, 3) . ', ' . $year : Carbon::create()->day(1)->month($month)->monthName;
     }
 
