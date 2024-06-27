@@ -3,6 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TimePeriodController;
 
+Route::get('/', function () {
+    return view('welcome');
+});
 
 // Route::apiResource('account', \App\Http\Controllers\AccountController::class);
 // Route::apiResource('account_type', \App\Http\Controllers\AccountTypeController::class);
